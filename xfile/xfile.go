@@ -4,26 +4,42 @@ import (
 	"context"
 	"fmt"
 	"io/ioutil"
-	"strings"
+	"path/filepath"
+	"sync"
 
+	"github.com/docker/docker/pkg/filenotify"
 	"github.com/sandwich-go/xconf/kv"
-	"gopkg.in/fsnotify.v1"
+)
+
+const (
+	LoaderName = "file"
 )
 
 // Loader file Loader
 type Loader struct {
-	watcher *fsnotify.Watcher
+	cc        *Options
+	watcher   filenotify.FileWatcher
+	watchFile sync.Map
 	*kv.Common
+	onChanged map[string][]kv.ContentChange
+	mutex     sync.Mutex
 }
 
 // New new file Loader
-func New(opts ...kv.Option) (p kv.Loader, err error) {
-	watcher, err := fsnotify.NewWatcher()
+func New(opts ...Option) (p kv.Loader, err error) {
+	opt := NewOptions(opts...)
+	watcher, err := filenotify.NewEventWatcher()
 	if err != nil {
-		return nil, fmt.Errorf("got error:%v when fsnotify.NewWatcher", err)
+		opt.LogWarning(fmt.Sprintf("xfile.Loader new event watcher fail, new polling watcher instead. err:%s", err.Error()))
+		watcher = filenotify.NewPollingWatcher()
 	}
-	x := &Loader{watcher: watcher}
-	x.Common = kv.New("file", x, opts...)
+	x := &Loader{
+		cc:        opt,
+		watcher:   watcher,
+		onChanged: make(map[string][]kv.ContentChange),
+	}
+	x.Common = kv.New(LoaderName, x, opt.KVOption...)
+	go x.watchEvent()
 	return x, nil
 }
 
@@ -37,37 +53,76 @@ func (p *Loader) GetImplement(ctx context.Context, confPath string) ([]byte, err
 
 // WatchImplement 实现common.loaderImplement.WatchImplement
 func (p *Loader) WatchImplement(ctx context.Context, confPath string, onContentChange kv.ContentChange) {
-	go func(pin *Loader, oc kv.ContentChange) {
-		watched := false
-		for {
+	if err := p.watcher.Add(confPath); err != nil {
+		if p.CC.OnWatchError != nil {
+			p.CC.OnWatchError(LoaderName, confPath, err)
+		}
+	}
+	// PollingWatcher 返回的Name是 文件名
+	p.watchFile.Store(filepath.Base(confPath), &fileInfo{
+		path: confPath,
+	})
+	// EventWatcher 返回的的Name是 全路径
+	p.watchFile.Store(confPath, &fileInfo{
+		path: confPath,
+	})
+	p.mutex.Lock()
+	p.onChanged[confPath] = append(p.onChanged[confPath], onContentChange)
+	p.mutex.Unlock()
+}
+
+type fileInfo struct {
+	path string
+}
+
+func (p *Loader) watchEvent() {
+	for {
+		select {
+		case <-p.Done:
+			return
+		case event, ok := <-p.watcher.Events():
+			if !ok {
+				return
+			}
+			if f, ok := p.watchFile.Load(event.Name); ok {
+				if info, ok2 := f.(*fileInfo); ok2 {
+					p.fileChange(context.Background(), info.path)
+				}
+			}
+		case err := <-p.watcher.Errors():
 			select {
-			case <-pin.Done:
+			case <-p.Done:
 				return
 			default:
 			}
-			if !watched {
-				if err := pin.watcher.Add(confPath); err != nil {
-					pin.CC.OnWatchError(pin.Name(), confPath, err)
-				}
-			}
-			select {
-			case event := <-pin.watcher.Events:
-				if (event.Op&fsnotify.Write) == fsnotify.Write || (event.Op&fsnotify.Create) == fsnotify.Create {
-					confPathChanged := strings.ReplaceAll(event.Name, "\\", "/")
-					if b, err := pin.Get(ctx, confPathChanged); err == nil {
-						if pin.IsChanged(confPathChanged, b) {
-							oc(pin.Name(), confPathChanged, b)
-						}
-					}
-				}
-			case err := <-pin.watcher.Errors:
-				select {
-				case <-pin.Done:
-					return
-				default:
-				}
-				pin.CC.OnWatchError(pin.Name(), confPath, err)
+			if p.CC.OnWatchError != nil {
+				p.CC.OnWatchError(LoaderName, "", err)
 			}
 		}
-	}(p, onContentChange)
+	}
+}
+
+func (p *Loader) fileChange(ctx context.Context, name string) {
+	if b, err := p.Get(ctx, name); err == nil {
+		if p.IsChanged(name, b) {
+			p.mutex.Lock()
+			for _, callback := range p.onChanged[name] {
+				if errLoad := callback(LoaderName, name, b); errLoad == nil {
+					p.cc.OnUpdate(name, b)
+				} else {
+					p.cc.LogWarning(
+						fmt.Sprintf("xfile.Loader load file fail, fileName:%s content:%s err:%s",
+							name, string(b), errLoad.Error()))
+				}
+			}
+			p.mutex.Unlock()
+		} else {
+			p.cc.LogWarning(
+				fmt.Sprintf("xfile.Loader watch file update, but not changed. fileName:%s ", name))
+		}
+	} else {
+		p.cc.LogWarning(
+			fmt.Sprintf("xfile.Loader get file content fail, fileName:%s err:%s",
+				name, err.Error()))
+	}
 }
