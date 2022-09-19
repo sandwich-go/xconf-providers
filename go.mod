@@ -8,7 +8,6 @@ require (
 	github.com/sandwich-go/xconf v0.3.22
 	go.etcd.io/etcd/client/v3 v3.5.1
 	google.golang.org/grpc v1.43.0
-	gopkg.in/fsnotify.v1 v1.4.7
 )
 
 require (
