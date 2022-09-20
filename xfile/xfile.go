@@ -116,6 +116,7 @@ func (p *Loader) fileChange(ctx context.Context, name string) {
 			p.mutex.Lock()
 			for _, callback := range p.onChanged[name] {
 				if errLoad := callback(LoaderName, name, b); errLoad == nil {
+					p.cc.LogDebug(fmt.Sprintf("watch config update succ: %s", name))
 					p.cc.OnUpdate(name, b)
 				} else {
 					p.cc.LogWarning(
