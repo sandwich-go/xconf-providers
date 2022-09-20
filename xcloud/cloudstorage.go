@@ -127,6 +127,7 @@ func (l *Loader) fileChange(name string) bool {
 		if l.IsChanged(name, b) {
 			for _, callback := range l.onChanged[name] {
 				if errLoad := callback(LoaderName, name, b); errLoad == nil {
+					l.cc.LogDebug(fmt.Sprintf("xcloud.Loader watch config update succ: %s", name))
 					l.cc.OnUpdate(name, b)
 				} else {
 					l.cc.LogWarning(
