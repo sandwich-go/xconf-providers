@@ -28,11 +28,18 @@ type Loader struct {
 // New new file Loader
 func New(opts ...Option) (p kv.Loader, err error) {
 	opt := NewOptions(opts...)
-	watcher, err := filenotify.NewEventWatcher()
-	if err != nil {
-		opt.LogWarning(fmt.Sprintf("xfile.Loader new event watcher fail, new polling watcher instead. err:%s", err.Error()))
+	var watcher filenotify.FileWatcher
+	if opt.PollingMode {
 		watcher = filenotify.NewPollingWatcher()
+	} else {
+		if wh, er := filenotify.NewEventWatcher(); er != nil {
+			opt.LogWarning(fmt.Sprintf("xfile.Loader new event watcher fail, new polling watcher instead. err:%s", er.Error()))
+			watcher = filenotify.NewPollingWatcher()
+		} else {
+			watcher = wh
+		}
 	}
+
 	x := &Loader{
 		cc:        opt,
 		watcher:   watcher,
@@ -84,6 +91,7 @@ func (p *Loader) watchEvent() {
 			if !ok {
 				return
 			}
+			p.cc.LogDebug(fmt.Sprintf("watch event: %s", event.String()))
 			if f, ok := p.watchFile.Load(event.Name); ok {
 				if info, ok2 := f.(*fileInfo); ok2 {
 					p.fileChange(context.Background(), info.path)

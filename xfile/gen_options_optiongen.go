@@ -13,10 +13,12 @@ import (
 
 // Options should use NewOptions to initialize it
 type Options struct {
-	KVOption   []kv.Option
-	LogDebug   xconf.LogFunc
-	LogWarning xconf.LogFunc
-	OnUpdate   status.OnConfUpdate
+	// annotation@PollingMode(comment="Docker运行时fs-event方式不可用时可强制使用polling模式")
+	PollingMode bool
+	KVOption    []kv.Option
+	LogDebug    xconf.LogFunc
+	LogWarning  xconf.LogFunc
+	OnUpdate    status.OnConfUpdate
 }
 
 // NewOptions new Options
@@ -40,6 +42,13 @@ func (cc *Options) ApplyOption(opts ...Option) {
 
 // Option option func
 type Option func(cc *Options)
+
+// WithPollingMode Docker运行时fs-event方式不可用时可强制使用polling模式
+func WithPollingMode(v bool) Option {
+	return func(cc *Options) {
+		cc.PollingMode = v
+	}
+}
 
 // WithKVOption option func for filed KVOption
 func WithKVOption(v ...kv.Option) Option {
@@ -80,6 +89,7 @@ func newDefaultOptions() *Options {
 	cc := &Options{}
 
 	for _, opt := range [...]Option{
+		WithPollingMode(false),
 		WithKVOption(nil...),
 		WithLogDebug(func(s string) { log.Println("[  DEBUG] " + s) }),
 		WithLogWarning(func(s string) { log.Println("[WARNING] " + s) }),
@@ -92,6 +102,7 @@ func newDefaultOptions() *Options {
 }
 
 // all getter func
+func (cc *Options) GetPollingMode() bool             { return cc.PollingMode }
 func (cc *Options) GetKVOption() []kv.Option         { return cc.KVOption }
 func (cc *Options) GetLogDebug() xconf.LogFunc       { return cc.LogDebug }
 func (cc *Options) GetLogWarning() xconf.LogFunc     { return cc.LogWarning }
@@ -99,6 +110,7 @@ func (cc *Options) GetOnUpdate() status.OnConfUpdate { return cc.OnUpdate }
 
 // OptionsVisitor visitor interface for Options
 type OptionsVisitor interface {
+	GetPollingMode() bool
 	GetKVOption() []kv.Option
 	GetLogDebug() xconf.LogFunc
 	GetLogWarning() xconf.LogFunc
