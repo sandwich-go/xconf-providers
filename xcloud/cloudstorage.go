@@ -113,6 +113,9 @@ func (l *Loader) watchEvent() {
 						l.lastModified[k] = ll
 					}
 				}
+			} else {
+				l.cc.LogWarning(
+					fmt.Sprintf("xcloud.Loader get file last modified fail, fileName:%s err:%s", k, err.Error()))
 			}
 			cancel()
 		}
@@ -135,11 +138,11 @@ func (l *Loader) fileChange(name string) bool {
 							name, string(b), errLoad.Error()))
 				}
 			}
-			return true
 		} else {
 			l.cc.LogWarning(
 				fmt.Sprintf("xcloud.Loader watch file update, but not changed. fileName:%s ", name))
 		}
+		return true
 	} else {
 		l.cc.LogWarning(
 			fmt.Sprintf("xcloud.Loader get file content fail, fileName:%s err:%s",
