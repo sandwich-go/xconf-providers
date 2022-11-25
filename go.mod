@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/docker/docker v20.10.18+incompatible
 	github.com/minio/minio-go/v7 v7.0.37
+	github.com/sandwich-go/boost v0.1.0-alpha.19
 	github.com/sandwich-go/xconf v0.3.22
 	go.etcd.io/etcd/client/v3 v3.5.1
 	google.golang.org/grpc v1.43.0
@@ -42,7 +43,7 @@ require (
 	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/genproto v0.0.0-20210602131652-f16073e35f0c // indirect
-	google.golang.org/protobuf v1.26.0 // indirect
+	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/ini.v1 v1.66.6 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )

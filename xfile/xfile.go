@@ -8,6 +8,7 @@ import (
 	"sync"
 
 	"github.com/docker/docker/pkg/filenotify"
+	"github.com/sandwich-go/boost/paniccatcher"
 	"github.com/sandwich-go/xconf/kv"
 )
 
@@ -46,7 +47,12 @@ func New(opts ...Option) (p kv.Loader, err error) {
 		onChanged: make(map[string][]kv.ContentChange),
 	}
 	x.Common = kv.New(LoaderName, x, opt.KVOption...)
-	go x.watchEvent()
+	go paniccatcher.AutoRecover(
+		"xfile.worker",
+		x.watchEvent,
+		paniccatcher.WithAutoRecoverOptionOnRecover(func(tag string, reason interface{}) {
+			x.cc.LogWarning(fmt.Sprintf("%s panic recover reason:%v", tag, reason))
+		}))
 	return x, nil
 }
 
@@ -126,6 +132,8 @@ func (p *Loader) fileChange(ctx context.Context, name string) {
 			}
 			p.mutex.Unlock()
 		} else {
+			// 没有变化的文件也要同步更新status，检查时跳过
+			p.cc.OnUpdate(name, b)
 			p.cc.LogWarning(
 				fmt.Sprintf("xfile.Loader watch file update, but not changed. fileName:%s ", name))
 		}

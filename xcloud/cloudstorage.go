@@ -10,6 +10,7 @@ import (
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
+	"github.com/sandwich-go/boost/paniccatcher"
 	"github.com/sandwich-go/xconf/kv"
 )
 
@@ -17,6 +18,7 @@ const (
 	LoaderName = "cloud"
 )
 
+// New make cloud storate kv.Loader
 func New(opts ...Option) (p kv.Loader, err error) {
 	opt := NewOptions(opts...)
 	genEndPoint := type2GenEndpointFunc[opt.StorageType]
@@ -39,7 +41,12 @@ func New(opts ...Option) (p kv.Loader, err error) {
 		lastModified: make(map[string]time.Time),
 	}
 	x.Common = kv.New(LoaderName, x, opt.KVOption...)
-	go x.watchEvent()
+	go paniccatcher.AutoRecover(
+		"xcloud.worker",
+		x.watchEvent,
+		paniccatcher.WithAutoRecoverOptionOnRecover(func(tag string, reason interface{}) {
+			x.cc.LogWarning(fmt.Sprintf("%s panic recover reason:%v", tag, reason))
+		}))
 	return x, err
 }
 
@@ -139,6 +146,8 @@ func (l *Loader) fileChange(name string) bool {
 				}
 			}
 		} else {
+			// 没有变化的文件也要同步更新status，检查时跳过
+			l.cc.OnUpdate(name, b)
 			l.cc.LogWarning(
 				fmt.Sprintf("xcloud.Loader watch file update, but not changed. fileName:%s ", name))
 		}
