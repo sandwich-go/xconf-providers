@@ -1,3 +1,8 @@
+### Unreleased (2022-11-25 18:35:17)
+
+#### 🤖  Tools
+  * **sem**: make changelog ([9a343b3](https://github.com/sandwich-go/xconf-providers/commit/9a343b3a6cecdc2629c3fca464725574ae575e93)) (<small>[Daming Yang](daming.yang@centurygame.com)@2022-11-25 18:29:24 &#43;0800 &#43;0800</small>)
+
 ### v0.1.0-alpha.6 (2022-11-25 18:25:11)
 
 #### 🛠  Refactor
