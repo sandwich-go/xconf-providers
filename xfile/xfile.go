@@ -61,7 +61,12 @@ func (p *Loader) CloseImplement(ctx context.Context) error { return p.watcher.Cl
 
 // GetImplement 实现common.loaderImplement.GetImplement
 func (p *Loader) GetImplement(ctx context.Context, confPath string) ([]byte, error) {
-	return ioutil.ReadFile(confPath)
+	bs, err := ioutil.ReadFile(confPath)
+	if err == nil {
+		// 可能没有watch，读文件也要同步更新status，检查时跳过
+		p.cc.OnUpdate(confPath, bs)
+	}
+	return bs, err
 }
 
 // WatchImplement 实现common.loaderImplement.WatchImplement
