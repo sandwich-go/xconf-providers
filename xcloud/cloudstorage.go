@@ -10,7 +10,7 @@ import (
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
-	"github.com/sandwich-go/boost/paniccatcher"
+	"github.com/sandwich-go/boost/xpanic"
 	"github.com/sandwich-go/xconf/kv"
 )
 
@@ -41,10 +41,10 @@ func New(opts ...Option) (p kv.Loader, err error) {
 		lastModified: make(map[string]time.Time),
 	}
 	x.Common = kv.New(LoaderName, x, opt.KVOption...)
-	go paniccatcher.AutoRecover(
+	go xpanic.AutoRecover(
 		"xcloud.worker",
 		x.watchEvent,
-		paniccatcher.WithAutoRecoverOptionOnRecover(func(tag string, reason interface{}) {
+		xpanic.WithAutoRecoverOptionOnRecover(func(tag string, reason interface{}) {
 			x.cc.LogWarning(fmt.Sprintf("%s panic recover reason:%v", tag, reason))
 		}))
 	return x, err
