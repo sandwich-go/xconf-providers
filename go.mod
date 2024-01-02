@@ -3,7 +3,6 @@ module github.com/sandwich-go/xconf-providers
 go 1.17
 
 require (
-	github.com/docker/docker v20.10.18+incompatible
 	github.com/minio/minio-go/v7 v7.0.47
 	github.com/sandwich-go/boost v1.3.2-daily.1
 	github.com/sandwich-go/xconf v0.3.22

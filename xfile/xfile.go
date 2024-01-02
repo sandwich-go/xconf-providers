@@ -7,9 +7,10 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/docker/docker/pkg/filenotify"
 	"github.com/sandwich-go/boost/xpanic"
 	"github.com/sandwich-go/xconf/kv"
+
+	"github.com/sandwich-go/xconf-providers/pkg/filenotify"
 )
 
 const (
