@@ -1,3 +1,11 @@
+### v0.1.0-alpha.10 (2024-01-02 12:51:36)
+
+#### 🛠  Refactor
+  * add filenotify from docker ([b104813](https://github.com/sandwich-go/xconf-providers/commit/b104813ac54c3f7e05bb5024081d27a73b42d4c2)) (<small>[Daming Yang](daming.yang@centurygame.com)@2024-01-02 12:51:36 &#43;0800 &#43;0800</small>)
+
+#### 🤖  Tools
+  * **sem**: make changelog ([0e61a69](https://github.com/sandwich-go/xconf-providers/commit/0e61a694a2c408b8899cba5ca6edc39ebd1cc647)) (<small>[Daming Yang](daming.yang@centurygame.com)@2024-01-02 12:51:20 &#43;0800 &#43;0800</small>)
+
 ### v0.1.0-alpha.9 (2024-01-02 12:51:03)
 
 #### 🛠  Refactor
