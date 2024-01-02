@@ -1,7 +1,20 @@
-### Unreleased (2022-11-25 18:35:17)
+### v0.1.0-alpha.9 (2024-01-02 12:51:03)
+
+#### 🛠  Refactor
+  * add filenotify from docker ([6e3d84d](https://github.com/sandwich-go/xconf-providers/commit/6e3d84d0f4784a147c7eb1ffdb228714d2e60159) , [6dfd127](https://github.com/sandwich-go/xconf-providers/commit/6dfd127eea032ea0761e4aa7c6086c5ddca91766)) (<small>[Daming Yang](daming.yang@centurygame.com)@2024-01-02 12:51:03 &#43;0800 &#43;0800</small>)
+
+### v0.1.0-alpha.8 (2023-02-23 13:36:02)
 
 #### 🤖  Tools
-  * **sem**: make changelog ([9a343b3](https://github.com/sandwich-go/xconf-providers/commit/9a343b3a6cecdc2629c3fca464725574ae575e93)) (<small>[Daming Yang](daming.yang@centurygame.com)@2022-11-25 18:29:24 &#43;0800 &#43;0800</small>)
+  * 更新 boost 库 ([5385670](https://github.com/sandwich-go/xconf-providers/commit/5385670a1c9c8bad2ddcff690e0d8208eed34f24)) (<small>[祝黄清](huangqing.zhu@centurygame.com)@2023-02-23 13:36:02 &#43;0800 &#43;0800</small>)
+
+### v0.1.0-alpha.7 (2022-11-25 19:03:16)
+
+#### 🛠  Refactor
+  * update status when get file ([68f323c](https://github.com/sandwich-go/xconf-providers/commit/68f323cfb7565022d7a04fbf027d191e1dbfae22)) (<small>[Daming Yang](daming.yang@centurygame.com)@2022-11-25 19:03:16 &#43;0800 &#43;0800</small>)
+
+#### 🤖  Tools
+  * **sem**: make changelog ([075b992](https://github.com/sandwich-go/xconf-providers/commit/075b992fcdc93fa5411127b9805f192da92c1510) , [9a343b3](https://github.com/sandwich-go/xconf-providers/commit/9a343b3a6cecdc2629c3fca464725574ae575e93)) (<small>[Daming Yang](daming.yang@centurygame.com)@2022-11-25 18:35:18 &#43;0800 &#43;0800</small>)
 
 ### v0.1.0-alpha.6 (2022-11-25 18:25:11)
 
