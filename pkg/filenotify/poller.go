@@ -190,16 +190,16 @@ func (w *filePoller) watch(f *os.File, lastFi os.FileInfo, chClose chan struct{}
 			continue
 		}
 
-		if fi.Mode() != lastFi.Mode() {
-			if err := w.sendEvent(fsnotify.Event{Op: fsnotify.Chmod, Name: fi.Name()}, chClose); err != nil {
+		if fi.ModTime() != lastFi.ModTime() || fi.Size() != lastFi.Size() {
+			if err := w.sendEvent(fsnotify.Event{Op: fsnotify.Write, Name: fi.Name()}, chClose); err != nil {
 				return
 			}
 			lastFi = fi
 			continue
 		}
 
-		if fi.ModTime() != lastFi.ModTime() || fi.Size() != lastFi.Size() {
-			if err := w.sendEvent(fsnotify.Event{Op: fsnotify.Write, Name: fi.Name()}, chClose); err != nil {
+		if fi.Mode() != lastFi.Mode() {
+			if err := w.sendEvent(fsnotify.Event{Op: fsnotify.Chmod, Name: fi.Name()}, chClose); err != nil {
 				return
 			}
 			lastFi = fi
