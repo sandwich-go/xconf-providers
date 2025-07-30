@@ -14,10 +14,11 @@ import (
 type StorageType string
 
 const (
-	StorageTypeNoop   StorageType = "noop"
-	StorageTypeS3     StorageType = "s3"
-	StorageTypeQCloud StorageType = "qcloud"
-	StorageTypeGCS    StorageType = "gcs"
+	StorageTypeNoop     StorageType = "noop"
+	StorageTypeS3       StorageType = "s3"
+	StorageTypeQCloud   StorageType = "qcloud"
+	StorageTypeGCS      StorageType = "gcs"
+	StorageTypeHuaweiRu StorageType = "huaweiru"
 )
 
 //go:generate optiongen --option_with_struct_name=false --option_return_previous=false
@@ -41,9 +42,10 @@ var type2GenEndpointFunc = map[StorageType]genEndpointFunc{
 	StorageTypeNoop: func(options *Options) (string, error) {
 		return "", errors.New("must set storage type")
 	},
-	StorageTypeS3:     genS3Endpoint,
-	StorageTypeQCloud: genQCloudEndpoint,
-	StorageTypeGCS:    genGCSEndpoint,
+	StorageTypeS3:       genS3Endpoint,
+	StorageTypeQCloud:   genQCloudEndpoint,
+	StorageTypeGCS:      genGCSEndpoint,
+	StorageTypeHuaweiRu: genHuaweiRuEndpoint,
 }
 
 func genS3Endpoint(options *Options) (string, error) {
@@ -62,4 +64,8 @@ func genQCloudEndpoint(options *Options) (string, error) {
 
 func genGCSEndpoint(options *Options) (string, error) {
 	return "storage.googleapis.com", nil
+}
+
+func genHuaweiRuEndpoint(options *Options) (string, error) {
+	return "obs.ru-moscow-1.hc.sbercloud.ru", nil
 }
