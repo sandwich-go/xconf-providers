@@ -1,4 +1,12 @@
-### v0.1.1 🌈 (2025-07-30 14:20:57)
+### v0.1.2 🌈 (2025-07-30 14:51:55)
+
+#### 🛠  Refactor
+  * add huaweiru ([1617e57](https://github.com/sandwich-go/xconf-providers/commit/1617e5708248bb680716cd39356b0aa201c43e68)) (<small>[Daming Yang](daming.yang@centurygame.com)@2025-07-30 14:51:55 &#43;0800 &#43;0800</small>)
+
+#### 🤖  Tools
+  * **sem**: make changelog ([6df74ce](https://github.com/sandwich-go/xconf-providers/commit/6df74ce3ad196c1788f5d569111ccd77015bfcae)) (<small>[Daming Yang](daming.yang@centurygame.com)@2025-07-30 14:21:30 &#43;0800 &#43;0800</small>)
+
+### v0.1.1 (2025-07-30 14:20:57)
 
 #### 🛠  Refactor
   * add huaweiru ([3bd6ee9](https://github.com/sandwich-go/xconf-providers/commit/3bd6ee9c9c4254651bdcd3d427082ce8f20000ca)) (<small>[Daming Yang](daming.yang@centurygame.com)@2025-07-30 14:20:57 &#43;0800 &#43;0800</small>)
