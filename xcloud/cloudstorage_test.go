@@ -10,12 +10,31 @@ import (
 	"testing"
 	"time"
 
-	"github.com/minio/minio-go/v7"
+	"github.com/sandwich-go/minio-go"
 )
 
-const (
+var (
 	bucket = "zhongtai"
 )
+
+func TestHuaweiCloudLoader(t *testing.T) {
+	fileName := "/test/conf.ini"
+	content := "hello cloud storage xconf"
+	bucket = os.Getenv("RELEASE_HUAWEIRU_BUCKET")
+	l, err := New(
+		WithStorageType(StorageTypeHuaweiRu),
+		WithAccessKey(os.Getenv("RELEASE_HUAWEIRU_KEY")),
+		WithSecret(os.Getenv("RELEASE_HUAWEIRU_SECRET")),
+		WithRegion("ru-moscow-1"),
+		WithBucket(bucket))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		delObject(l.(*Loader).cli, fileName)
+	}()
+	putObject(l.(*Loader).cli, fileName, []byte(content))
+}
 
 func TestNewCloudLoader(t *testing.T) {
 	fileName := "/test/conf.ini"
