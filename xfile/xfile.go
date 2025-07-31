@@ -3,7 +3,7 @@ package xfile
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"sync"
 
@@ -62,10 +62,13 @@ func (p *Loader) CloseImplement(ctx context.Context) error { return p.watcher.Cl
 
 // GetImplement 实现common.loaderImplement.GetImplement
 func (p *Loader) GetImplement(ctx context.Context, confPath string) ([]byte, error) {
-	bs, err := ioutil.ReadFile(confPath)
+	bs, err := os.ReadFile(confPath)
 	if err == nil {
 		// 可能没有watch，读文件也要同步更新status，检查时跳过
 		p.cc.OnUpdate(confPath, bs)
+	}
+	if p.cc.PollingMode { // 如果是PollingMode，忽略读取失败
+		return bs, nil
 	}
 	return bs, err
 }

@@ -45,27 +45,17 @@ func (w *filePoller) Add(name string) error {
 		return errPollerClosed
 	}
 
-	f, err := os.Open(name)
-	if err != nil {
-		return err
-	}
-	fi, err := os.Stat(name)
-	if err != nil {
-		f.Close()
-		return err
-	}
-
 	if w.watches == nil {
 		w.watches = make(map[string]chan struct{})
 	}
 	if _, exists := w.watches[name]; exists {
-		f.Close()
 		return fmt.Errorf("watch exists")
 	}
 	chClose := make(chan struct{})
 	w.watches[name] = chClose
+	fi, _ := os.Stat(name)
 
-	go w.watch(f, fi, chClose)
+	go w.watch(name, fi, chClose)
 	return nil
 }
 
@@ -141,9 +131,7 @@ func (w *filePoller) sendErr(e error, chClose <-chan struct{}) error {
 
 // watch is responsible for polling the specified file for changes
 // upon finding changes to a file or errors, sendEvent/sendErr is called
-func (w *filePoller) watch(f *os.File, lastFi os.FileInfo, chClose chan struct{}) {
-	defer f.Close()
-
+func (w *filePoller) watch(fileName string, lastFi os.FileInfo, chClose chan struct{}) {
 	timer := time.NewTimer(watchWaitTime)
 	if !timer.Stop() {
 		<-timer.C
@@ -159,7 +147,7 @@ func (w *filePoller) watch(f *os.File, lastFi os.FileInfo, chClose chan struct{}
 			return
 		}
 
-		fi, err := os.Stat(f.Name())
+		fi, err := os.Stat(fileName)
 		if err != nil {
 			// if we got an error here and lastFi is not set, we can presume that nothing has changed
 			// This should be safe since before `watch()` is called, a stat is performed, there is any error `watch` is not called
@@ -169,7 +157,7 @@ func (w *filePoller) watch(f *os.File, lastFi os.FileInfo, chClose chan struct{}
 			// If it doesn't exist at this point, it must have been removed
 			// no need to send the error here since this is a valid operation
 			if os.IsNotExist(err) {
-				if err := w.sendEvent(fsnotify.Event{Op: fsnotify.Remove, Name: f.Name()}, chClose); err != nil {
+				if err := w.sendEvent(fsnotify.Event{Op: fsnotify.Remove, Name: fileName}, chClose); err != nil {
 					return
 				}
 				lastFi = nil
