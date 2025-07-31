@@ -1,4 +1,12 @@
-### v0.1.2 🌈 (2025-07-30 14:51:55)
+### v0.1.3 🌈 (2025-07-31 19:49:18)
+
+#### 🚀  New Feature
+  * PollingMode 可以watch不存在的目录 ([48fc620](https://github.com/sandwich-go/xconf-providers/commit/48fc6205f4d9d1902f8c73e90759725c4250591e)) (<small>[zhengyang.zhu](zhengyang.zhu@centurygame.com)@2025-07-31 19:49:18 &#43;0800 &#43;0800</small>)
+
+#### 🤖  Tools
+  * **sem**: make changelog ([41aae76](https://github.com/sandwich-go/xconf-providers/commit/41aae76dfba2161363644e62037246ba992b7907)) (<small>[Daming Yang](daming.yang@centurygame.com)@2025-07-30 14:54:29 &#43;0800 &#43;0800</small>)
+
+### v0.1.2 (2025-07-30 14:51:55)
 
 #### 🛠  Refactor
   * add huaweiru ([1617e57](https://github.com/sandwich-go/xconf-providers/commit/1617e5708248bb680716cd39356b0aa201c43e68)) (<small>[Daming Yang](daming.yang@centurygame.com)@2025-07-30 14:51:55 &#43;0800 &#43;0800</small>)
