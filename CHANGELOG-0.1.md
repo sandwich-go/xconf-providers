@@ -1,4 +1,12 @@
-### v0.1.5 🌈 (2025-08-04 14:43:54)
+### v0.1.6 🌈 (2025-08-04 14:53:30)
+
+#### 🛠  Refactor
+  * add huawei ([f32ed8f](https://github.com/sandwich-go/xconf-providers/commit/f32ed8fea3e19a74b711a9ac93af8290b91f7559)) (<small>[Daming Yang](daming.yang@centurygame.com)@2025-08-04 14:53:30 &#43;0800 &#43;0800</small>)
+
+#### 🤖  Tools
+  * **sem**: make changelog ([aab166c](https://github.com/sandwich-go/xconf-providers/commit/aab166cc21959f5bd449ed04e9cb7cb966d3bb2d)) (<small>[Daming Yang](daming.yang@centurygame.com)@2025-08-04 14:44:27 &#43;0800 &#43;0800</small>)
+
+### v0.1.5 (2025-08-04 14:43:54)
 
 #### 🛠  Refactor
   * xcloud use boost ([b58d081](https://github.com/sandwich-go/xconf-providers/commit/b58d0811bbda457af770494427b5b1cd86df6dcf)) (<small>[Daming Yang](daming.yang@centurygame.com)@2025-08-04 14:43:54 &#43;0800 &#43;0800</small>)
