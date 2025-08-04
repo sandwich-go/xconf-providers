@@ -1,4 +1,12 @@
-### v0.1.3 🌈 (2025-07-31 19:49:18)
+### v0.1.4 🌈 (2025-08-04 14:22:18)
+
+#### 🛠  Refactor
+  * upgrade boost ([a3fa096](https://github.com/sandwich-go/xconf-providers/commit/a3fa0968b92ff5fa5c3f41b92e79cb8e2f4b9383)) (<small>[Daming Yang](daming.yang@centurygame.com)@2025-08-04 14:22:18 &#43;0800 &#43;0800</small>)
+
+#### 🤖  Tools
+  * **sem**: make changelog ([3582d82](https://github.com/sandwich-go/xconf-providers/commit/3582d82eb4b12c91fe15301e8df1da0dcd06715a)) (<small>[zhengyang.zhu](zhengyang.zhu@centurygame.com)@2025-07-31 19:49:41 &#43;0800 &#43;0800</small>)
+
+### v0.1.3 (2025-07-31 19:49:18)
 
 #### 🚀  New Feature
   * PollingMode 可以watch不存在的目录 ([48fc620](https://github.com/sandwich-go/xconf-providers/commit/48fc6205f4d9d1902f8c73e90759725c4250591e)) (<small>[zhengyang.zhu](zhengyang.zhu@centurygame.com)@2025-07-31 19:49:18 &#43;0800 &#43;0800</small>)
