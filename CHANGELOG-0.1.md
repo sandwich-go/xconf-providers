@@ -1,4 +1,12 @@
-### v0.1.4 🌈 (2025-08-04 14:22:18)
+### v0.1.5 🌈 (2025-08-04 14:43:54)
+
+#### 🛠  Refactor
+  * xcloud use boost ([b58d081](https://github.com/sandwich-go/xconf-providers/commit/b58d0811bbda457af770494427b5b1cd86df6dcf)) (<small>[Daming Yang](daming.yang@centurygame.com)@2025-08-04 14:43:54 &#43;0800 &#43;0800</small>)
+
+#### 🤖  Tools
+  * **sem**: make changelog ([ab88c4d](https://github.com/sandwich-go/xconf-providers/commit/ab88c4df703d990ca866bfca181ec932a204c5f1)) (<small>[Daming Yang](daming.yang@centurygame.com)@2025-08-04 14:22:37 &#43;0800 &#43;0800</small>)
+
+### v0.1.4 (2025-08-04 14:22:18)
 
 #### 🛠  Refactor
   * upgrade boost ([a3fa096](https://github.com/sandwich-go/xconf-providers/commit/a3fa0968b92ff5fa5c3f41b92e79cb8e2f4b9383)) (<small>[Daming Yang](daming.yang@centurygame.com)@2025-08-04 14:22:18 &#43;0800 &#43;0800</small>)
