@@ -4,17 +4,16 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"github.com/sandwich-go/boost/misc/cloud"
 	"log"
 	"os"
 	"sync"
 	"testing"
 	"time"
-
-	"github.com/sandwich-go/minio-go"
 )
 
 var (
-	bucket = "zhongtai"
+	bucket = ""
 )
 
 func TestHuaweiCloudLoader(t *testing.T) {
@@ -22,7 +21,7 @@ func TestHuaweiCloudLoader(t *testing.T) {
 	content := "hello cloud storage xconf"
 	bucket = os.Getenv("RELEASE_HUAWEIRU_BUCKET")
 	l, err := New(
-		WithStorageType(StorageTypeHuaweiRu),
+		WithStorageType(cloud.StorageTypeHuaweiRU),
 		WithAccessKey(os.Getenv("RELEASE_HUAWEIRU_KEY")),
 		WithSecret(os.Getenv("RELEASE_HUAWEIRU_SECRET")),
 		WithRegion("ru-moscow-1"),
@@ -39,11 +38,12 @@ func TestHuaweiCloudLoader(t *testing.T) {
 func TestNewCloudLoader(t *testing.T) {
 	fileName := "/test/conf.ini"
 	content := "hello cloud storage xconf"
+	bucket = "dcs-pmt"
 	l, err := New(
-		WithStorageType(StorageTypeS3),
-		WithAccessKey(os.Getenv("RELEASE_CLOUD_KEY")),
-		WithSecret(os.Getenv("RELEASE_CLOUD_SECRET")),
-		WithRegion("us-east-2"),
+		WithStorageType(cloud.StorageTypeS3),
+		WithAccessKey(os.Getenv("AWS_S3_ACCESS_KEY_ID")),
+		WithSecret(os.Getenv("AWS_S3_SECRET_ACCESS_KEY")),
+		WithRegion("us-west-2"),
 		WithBucket(bucket))
 	if err != nil {
 		t.Fatal(err)
@@ -102,14 +102,14 @@ func TestNewCloudLoader(t *testing.T) {
 	}
 }
 
-func putObject(cli *minio.Client, name string, content []byte) {
-	_, err := cli.PutObject(context.Background(), bucket, name, bytes.NewReader(content), int64(len(content)), minio.PutObjectOptions{})
+func putObject(cli cloud.Storage, name string, content []byte) {
+	err := cli.PutObject(context.Background(), name, bytes.NewReader(content), len(content))
 	if err != nil {
 		log.Fatal(err)
 	}
 }
-func delObject(cli *minio.Client, name string) {
-	err := cli.RemoveObject(context.Background(), bucket, name, minio.RemoveObjectOptions{})
+func delObject(cli cloud.Storage, name string) {
+	err := cli.DelObject(context.Background(), name)
 	if err != nil {
 		log.Fatal(err)
 	}

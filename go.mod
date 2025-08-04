@@ -7,7 +7,6 @@ toolchain go1.24.1
 require (
 	github.com/fsnotify/fsnotify v1.5.4
 	github.com/sandwich-go/boost v1.3.82
-	github.com/sandwich-go/minio-go v1.0.0-beta.2
 	github.com/sandwich-go/xconf v0.3.22
 	go.etcd.io/etcd/client/v3 v3.5.1
 	google.golang.org/grpc v1.43.0
@@ -33,6 +32,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/rs/xid v1.5.0 // indirect
+	github.com/sandwich-go/minio-go v1.0.0-beta.2 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.1 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.1 // indirect
 	go.uber.org/atomic v1.7.0 // indirect

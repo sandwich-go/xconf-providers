@@ -4,14 +4,12 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"github.com/sandwich-go/boost/misc/cloud"
+	"github.com/sandwich-go/boost/xpanic"
+	"github.com/sandwich-go/xconf/kv"
 	"io"
 	"sync"
 	"time"
-
-	"github.com/sandwich-go/boost/xpanic"
-	"github.com/sandwich-go/minio-go"
-	"github.com/sandwich-go/minio-go/pkg/credentials"
-	"github.com/sandwich-go/xconf/kv"
 )
 
 const (
@@ -21,19 +19,10 @@ const (
 // New make cloud storate kv.Loader
 func New(opts ...Option) (p kv.Loader, err error) {
 	opt := NewOptions(opts...)
-	genEndPoint := type2GenEndpointFunc[opt.StorageType]
-	endpoint, err := genEndPoint(opt)
+	cli, err := cloud.New(opt.StorageType, opt.AccessKey, opt.Secret, opt.Bucket, cloud.WithRegion(opt.Region))
 	if err != nil {
 		return nil, err
 	}
-	cli, err := minio.New(endpoint, &minio.Options{
-		Creds:  credentials.NewStaticV4(opt.AccessKey, opt.Secret, ""),
-		Secure: false,
-	})
-	if err != nil {
-		return nil, err
-	}
-
 	x := &Loader{
 		cc:           opt,
 		cli:          cli,
@@ -52,7 +41,7 @@ func New(opts ...Option) (p kv.Loader, err error) {
 
 // Loader etcd Loader
 type Loader struct {
-	cli *minio.Client
+	cli cloud.Storage
 	*kv.Common
 	mutex        sync.Mutex
 	onChanged    map[string][]kv.ContentChange
@@ -65,13 +54,10 @@ func (l *Loader) CloseImplement(ctx context.Context) error {
 }
 
 func (l *Loader) GetImplement(ctx context.Context, confPath string) ([]byte, error) {
-	object, err := l.cli.GetObject(ctx, l.cc.Bucket, confPath, minio.GetObjectOptions{})
+	object, err := l.cli.GetObject(ctx, confPath)
 	if err != nil {
 		return nil, err
 	}
-	defer func(object *minio.Object) {
-		_ = object.Close()
-	}(object)
 	buf := new(bytes.Buffer)
 	_, err = io.Copy(buf, object)
 	if err != nil {
@@ -161,7 +147,7 @@ func (l *Loader) fileChange(name string) bool {
 }
 
 func (l *Loader) getLastModified(ctx context.Context, k string) (time.Time, error) {
-	stat, err := l.cli.StatObject(ctx, l.cc.Bucket, k, minio.StatObjectOptions{})
+	stat, err := l.cli.StatObject(ctx, k)
 	if err != nil {
 		return time.Time{}, err
 	}

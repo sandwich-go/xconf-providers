@@ -6,6 +6,7 @@ package xcloud
 import (
 	"log"
 
+	"github.com/sandwich-go/boost/misc/cloud"
 	"github.com/sandwich-go/xconf"
 	"github.com/sandwich-go/xconf-providers/status"
 	"github.com/sandwich-go/xconf/kv"
@@ -13,7 +14,7 @@ import (
 
 // Options should use NewOptions to initialize it
 type Options struct {
-	StorageType StorageType
+	StorageType cloud.StorageType
 	AccessKey   string
 	Secret      string
 	Region      string
@@ -28,7 +29,7 @@ type Options struct {
 func NewOptions(opts ...Option) *Options {
 	cc := newDefaultOptions()
 	for _, opt := range opts {
-		opt(cc)
+		opt.Apply(cc)
 	}
 	if watchDogOptions != nil {
 		watchDogOptions(cc)
@@ -36,74 +37,91 @@ func NewOptions(opts ...Option) *Options {
 	return cc
 }
 
-// ApplyOption apply mutiple new option
+// ApplyOption apply multiple new option
 func (cc *Options) ApplyOption(opts ...Option) {
 	for _, opt := range opts {
-		opt(cc)
+		opt.Apply(cc)
 	}
 }
 
-// Option option func
-type Option func(cc *Options)
+// OptionFunc option func
+type Option interface {
+	Apply(cc *Options)
+}
+
+var _ Option = OptionFunc(nil)
+
+type OptionFunc func(cc *Options)
+
+func (f OptionFunc) Apply(cc *Options) {
+	f(cc)
+}
 
 // WithStorageType option func for filed StorageType
-func WithStorageType(v StorageType) Option {
+func WithStorageType(v cloud.StorageType) OptionFunc {
 	return func(cc *Options) {
 		cc.StorageType = v
 	}
 }
 
 // WithAccessKey option func for filed AccessKey
-func WithAccessKey(v string) Option {
+func WithAccessKey(v string) OptionFunc {
 	return func(cc *Options) {
 		cc.AccessKey = v
 	}
 }
 
 // WithSecret option func for filed Secret
-func WithSecret(v string) Option {
+func WithSecret(v string) OptionFunc {
 	return func(cc *Options) {
 		cc.Secret = v
 	}
 }
 
 // WithRegion option func for filed Region
-func WithRegion(v string) Option {
+func WithRegion(v string) OptionFunc {
 	return func(cc *Options) {
 		cc.Region = v
 	}
 }
 
 // WithBucket option func for filed Bucket
-func WithBucket(v string) Option {
+func WithBucket(v string) OptionFunc {
 	return func(cc *Options) {
 		cc.Bucket = v
 	}
 }
 
 // WithKVOption option func for filed KVOption
-func WithKVOption(v ...kv.Option) Option {
+func WithKVOption(v ...kv.Option) OptionFunc {
 	return func(cc *Options) {
 		cc.KVOption = v
 	}
 }
 
+// AppendKVOption append func for filed KVOption
+func AppendKVOption(v ...kv.Option) OptionFunc {
+	return func(cc *Options) {
+		cc.KVOption = append(cc.KVOption, v...)
+	}
+}
+
 // WithLogDebug option func for filed LogDebug
-func WithLogDebug(v xconf.LogFunc) Option {
+func WithLogDebug(v xconf.LogFunc) OptionFunc {
 	return func(cc *Options) {
 		cc.LogDebug = v
 	}
 }
 
 // WithLogWarning option func for filed LogWarning
-func WithLogWarning(v xconf.LogFunc) Option {
+func WithLogWarning(v xconf.LogFunc) OptionFunc {
 	return func(cc *Options) {
 		cc.LogWarning = v
 	}
 }
 
 // WithOnUpdate option func for filed OnUpdate
-func WithOnUpdate(v status.OnConfUpdate) Option {
+func WithOnUpdate(v status.OnConfUpdate) OptionFunc {
 	return func(cc *Options) {
 		cc.OnUpdate = v
 	}
@@ -115,12 +133,10 @@ func InstallOptionsWatchDog(dog func(cc *Options)) { watchDogOptions = dog }
 // watchDogOptions global watch dog
 var watchDogOptions func(cc *Options)
 
-// newDefaultOptions new default Options
-func newDefaultOptions() *Options {
-	cc := &Options{}
-
-	for _, opt := range [...]Option{
-		WithStorageType(StorageTypeNoop),
+// setOptionsDefaultValue default Options value
+func setOptionsDefaultValue(cc *Options) {
+	for _, opt := range [...]OptionFunc{
+		WithStorageType(cloud.StorageTypeS3),
 		WithAccessKey(""),
 		WithSecret(""),
 		WithRegion(""),
@@ -132,24 +148,29 @@ func newDefaultOptions() *Options {
 	} {
 		opt(cc)
 	}
+}
 
+// newDefaultOptions new default Options
+func newDefaultOptions() *Options {
+	cc := &Options{}
+	setOptionsDefaultValue(cc)
 	return cc
 }
 
 // all getter func
-func (cc *Options) GetStorageType() StorageType      { return cc.StorageType }
-func (cc *Options) GetAccessKey() string             { return cc.AccessKey }
-func (cc *Options) GetSecret() string                { return cc.Secret }
-func (cc *Options) GetRegion() string                { return cc.Region }
-func (cc *Options) GetBucket() string                { return cc.Bucket }
-func (cc *Options) GetKVOption() []kv.Option         { return cc.KVOption }
-func (cc *Options) GetLogDebug() xconf.LogFunc       { return cc.LogDebug }
-func (cc *Options) GetLogWarning() xconf.LogFunc     { return cc.LogWarning }
-func (cc *Options) GetOnUpdate() status.OnConfUpdate { return cc.OnUpdate }
+func (cc *Options) GetStorageType() cloud.StorageType { return cc.StorageType }
+func (cc *Options) GetAccessKey() string              { return cc.AccessKey }
+func (cc *Options) GetSecret() string                 { return cc.Secret }
+func (cc *Options) GetRegion() string                 { return cc.Region }
+func (cc *Options) GetBucket() string                 { return cc.Bucket }
+func (cc *Options) GetKVOption() []kv.Option          { return cc.KVOption }
+func (cc *Options) GetLogDebug() xconf.LogFunc        { return cc.LogDebug }
+func (cc *Options) GetLogWarning() xconf.LogFunc      { return cc.LogWarning }
+func (cc *Options) GetOnUpdate() status.OnConfUpdate  { return cc.OnUpdate }
 
 // OptionsVisitor visitor interface for Options
 type OptionsVisitor interface {
-	GetStorageType() StorageType
+	GetStorageType() cloud.StorageType
 	GetAccessKey() string
 	GetSecret() string
 	GetRegion() string
