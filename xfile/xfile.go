@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/sandwich-go/boost/xpanic"
+	"gitlab.diandian.info/devcenter/boost/xpanic"
 	"github.com/sandwich-go/xconf/kv"
 
 	"github.com/sandwich-go/xconf-providers/pkg/filenotify"

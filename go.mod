@@ -1,13 +1,13 @@
 module github.com/sandwich-go/xconf-providers
 
-go 1.22.0
+go 1.24.0
 
 toolchain go1.24.1
 
 require (
 	github.com/fsnotify/fsnotify v1.5.4
-	github.com/sandwich-go/boost v1.3.82
 	github.com/sandwich-go/xconf v0.3.22
+	gitlab.diandian.info/devcenter/boost v1.3.118-0.20261106065306-ff22d2aacffa
 	go.etcd.io/etcd/client/v3 v3.5.1
 	google.golang.org/grpc v1.43.0
 )
@@ -38,12 +38,12 @@ require (
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.17.0 // indirect
-	golang.org/x/crypto v0.29.0 // indirect
-	golang.org/x/net v0.31.0 // indirect
-	golang.org/x/sys v0.27.0 // indirect
-	golang.org/x/text v0.20.0 // indirect
+	golang.org/x/crypto v0.45.0 // indirect
+	golang.org/x/net v0.47.0 // indirect
+	golang.org/x/sys v0.38.0 // indirect
+	golang.org/x/text v0.31.0 // indirect
 	google.golang.org/genproto v0.0.0-20210602131652-f16073e35f0c // indirect
-	google.golang.org/protobuf v1.33.0 // indirect
+	google.golang.org/protobuf v1.36.11 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

@@ -6,7 +6,7 @@ package xcloud
 import (
 	"log"
 
-	"github.com/sandwich-go/boost/misc/cloud"
+	"gitlab.diandian.info/devcenter/boost/misc/cloud"
 	"github.com/sandwich-go/xconf"
 	"github.com/sandwich-go/xconf-providers/status"
 	"github.com/sandwich-go/xconf/kv"

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/sandwich-go/boost/misc/cloud"
+	"gitlab.diandian.info/devcenter/boost/misc/cloud"
 	"log"
 	"os"
 	"sync"
